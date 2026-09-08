@@ -4,8 +4,11 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float speed = 7f;
     [SerializeField] private GameInput gameInput;
+    [SerializeField] private LayerMask counterLayerMask;
+
 
     private bool isWalking;
+    private Vector3 lastInteractDir;
 
     private void Update()
     {
@@ -16,13 +19,21 @@ public class Player : MonoBehaviour
     {
         float interactDistance = 2f;
         Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
-        if(Physics.Raycast(transform.position, moveDir, out RaycastHit raycastHit, interactDistance))
+
+        if (moveDir != Vector3.zero)
         {
-           Debug.Log("Raycast hit: " + raycastHit.collider.gameObject.name);
-        }else
+            lastInteractDir = moveDir;//玩家即使没有移动，也会记录最后一次的移动方向
+        }
+
+        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, counterLayerMask))
         {
-            Debug.Log("Raycast did not hit anything.");
+           if(raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            {
+                //Has a clear counter
+                clearCounter.Interact();
+            }
         }
     }
     public bool IsWalking()
