@@ -9,8 +9,9 @@ public class ContainCounter : BaseCounter
 
     public override void Interact(Player player)
     {
-        if (!HasKitchenObject())
+        if (!player.HasKitchenObject())
         {
+            //Player is not carrying anything   
             Transform kitchenObjectTranform = Instantiate(kitchenObjectSO.prefab);
             kitchenObjectTranform.GetComponent<KitchenObject>().SetKitchenObjectParent(player);
 
