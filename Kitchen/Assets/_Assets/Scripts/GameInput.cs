@@ -7,6 +7,7 @@ using System;
 public class GameInput : MonoBehaviour
 {
     public event EventHandler OnInteractEvent;
+    public event EventHandler OnInteractAlternateAction;
 
     // 由 Input Actions 资源自动生成的输入包装类实例。
     private InputSystem_Actions inputActions;
@@ -22,7 +23,13 @@ public class GameInput : MonoBehaviour
         // 启用 Player 动作表中的所有输入动作。
         inputActions.Player.Enable();
         // 订阅交互动作的触发事件。
-        inputActions.Player.Interact.started += OnInteract;
+        inputActions.Player.Interact.performed += OnInteract;
+        inputActions.Player.InteractAlternates.performed += InteractAlternate_performed;
+    }
+
+    private void InteractAlternate_performed(InputAction.CallbackContext obj)
+    {
+        OnInteractAlternateAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnInteract(InputAction.CallbackContext context)
