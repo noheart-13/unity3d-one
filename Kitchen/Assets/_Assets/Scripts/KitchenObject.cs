@@ -16,6 +16,7 @@ public class KitchenObject : MonoBehaviour
         if (this.KitchenObjectParent != null)
         {
             this.KitchenObjectParent.ClearKitchenObject();
+            //根据IKitchenObject接口的实现，ClearKitchenObject()方法会将KitchenObjectParent的kitchenObject字段设置为null，从而清除当前KitchenObject的父对象引用。
         }
 
         this.KitchenObjectParent = kitchenObjectParent;

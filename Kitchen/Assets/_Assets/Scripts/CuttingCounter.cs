@@ -3,7 +3,7 @@ using UnityEngine;
 public class CuttingCounter : BaseCounter
 {
 
-    [SerializeField] private KitchenObjectSO cuttingRecipeSO;
+    [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
 
     public override void Interact(Player player)
     {
@@ -13,6 +13,7 @@ public class CuttingCounter : BaseCounter
             if (player.HasKitchenObject())
             {
                 player.GetKitchenObject().SetKitchenObjectParent(this);
+                //SetKitchenObjectParent传入this（CuttingCounter），表示将玩家手中的厨房物体放到切菜台上
             }
             else
             {
@@ -37,9 +38,25 @@ public class CuttingCounter : BaseCounter
     {
         if (HasKitchenObject())
         {
+            KitchenObjectSO outputKitchenObjectSO = GetOutputForInput(GetKitchenObject().GetKitchenObjectSO());
             //There is a kitchen object here
-            GetKitchenObject().DestroySelf();
-            KitchenObject.SpawnKitchenObject(cuttingRecipeSO, this);
+            if (outputKitchenObjectSO != null)
+            {
+                GetKitchenObject().DestroySelf();
+
+                KitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
+            }
         }
+    }
+    private KitchenObjectSO GetOutputForInput(KitchenObjectSO inputKitchenObjectSO)
+    {
+        foreach (CuttingRecipeSO cuttingRecipeSO in cuttingRecipeSOArray)
+        {
+            if (cuttingRecipeSO.input == inputKitchenObjectSO)
+            {
+                return cuttingRecipeSO.output;
+            }
+        }
+        return null;
     }
 }
