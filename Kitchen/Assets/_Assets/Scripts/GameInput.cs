@@ -27,6 +27,13 @@ public class GameInput : MonoBehaviour
         inputActions.Player.InteractAlternates.performed += InteractAlternate_performed;
     }
 
+    private void OnDisable()
+    {
+        inputActions.Player.Interact.performed -= OnInteract;
+        inputActions.Player.InteractAlternates.performed -= InteractAlternate_performed;
+        inputActions.Player.Disable();
+    }
+
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
     {
         OnInteractAlternateAction?.Invoke(this, EventArgs.Empty);

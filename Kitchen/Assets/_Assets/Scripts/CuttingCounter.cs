@@ -21,7 +21,7 @@ public class CuttingCounter : BaseCounter
         if (!HasKitchenObject())
         {
             //There is no kitchen object here, so give the player a kitchen object
-            if (player.HasKitchenObject())
+            if (player.HasKitchenObject()&&HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO()))
             {
                 player.GetKitchenObject().SetKitchenObjectParent(this);
                 cuttingProgress = 0;
