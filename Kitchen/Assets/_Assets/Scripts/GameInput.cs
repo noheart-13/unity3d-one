@@ -20,18 +20,33 @@ public class GameInput : MonoBehaviour
 
     private void OnEnable()
     {
+        if (inputActions == null)
+        {
+            inputActions = new InputSystem_Actions();
+        }
+
         // 启用 Player 动作表中的所有输入动作。
-        inputActions.Player.Enable();
-        // 订阅交互动作的触发事件。
         inputActions.Player.Interact.performed += OnInteract;
         inputActions.Player.InteractAlternates.performed += InteractAlternate_performed;
+        // 订阅完成后再启用 Player 动作表中的所有输入动作。
+        inputActions.Player.Enable();
     }
 
     private void OnDisable()
     {
+        if (inputActions == null)
+        {
+            return;
+        }
+
         inputActions.Player.Interact.performed -= OnInteract;
         inputActions.Player.InteractAlternates.performed -= InteractAlternate_performed;
         inputActions.Player.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        inputActions?.Dispose();
     }
 
     private void InteractAlternate_performed(InputAction.CallbackContext obj)
