@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6923650980475733684}
-  - component: {fileID: -3996644405570501885}
+  - component: {fileID: -3419076230046614652}
   m_Layer: 0
   m_Name: Plates
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 8011724992082445452}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-3996644405570501885
+--- !u!114 &-3419076230046614652
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,10 +42,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 4941167455582196981}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0f70d69fb1dbaf4893a6e58d104f723, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a0c5b5ad06abf14ca957c4d753a0aff, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KitchenObject
+  m_EditorClassIdentifier: Assembly-CSharp::PlateKitchenObject
   kitchenObjectSO: {fileID: 11400000, guid: ce7a6a0c44bb2c647af1f0e895ed1338, type: 2}
+  validKitchenObjectSOList:
+  - {fileID: 11400000, guid: d3b684a08e0316746ad589ae25e9ec19, type: 2}
+  - {fileID: 11400000, guid: 5f38bd37280d59e48a5ff72115fa698e, type: 2}
+  - {fileID: 11400000, guid: 12d421ca3cef06d45ad640f9bae946ca, type: 2}
+  - {fileID: 11400000, guid: da1abb892f5d88941a3f6043c28340c2, type: 2}
+  - {fileID: 11400000, guid: 0a7649ce58ce9254bbd8ec841c6906d4, type: 2}
+  - {fileID: 11400000, guid: e35d4f68354de0346ab92ca004b29c11, type: 2}
 --- !u!1001 &6612782224507474444
 PrefabInstance:
   m_ObjectHideFlags: 0
