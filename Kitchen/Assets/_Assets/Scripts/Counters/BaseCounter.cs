@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class BaseCounter : MonoBehaviour,IKitchenObject
 {
+    public static void ResetStaticData()
+    {
+        OnAnyObjectPlacedHere = null;
+    }
+
     public static event System.EventHandler OnAnyObjectPlacedHere;
     [SerializeField] private Transform counterTopPoint;
 

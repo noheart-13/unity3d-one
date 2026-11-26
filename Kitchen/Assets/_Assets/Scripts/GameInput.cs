@@ -6,14 +6,18 @@ using System;
 
 public class GameInput : MonoBehaviour
 {
+    public static GameInput Instance { get; private set; }
+
     public event EventHandler OnInteractEvent;
     public event EventHandler OnInteractAlternateAction;
+    public event EventHandler OnPauseAction;
 
     // 由 Input Actions 资源自动生成的输入包装类实例。
     private InputSystem_Actions inputActions;
 
     private void Awake()
     {
+        Instance = this;
         // 创建输入实例，并启用 Player 动作表中的所有输入动作。
         inputActions = new InputSystem_Actions();
     }
@@ -30,6 +34,12 @@ public class GameInput : MonoBehaviour
         inputActions.Player.InteractAlternates.performed += InteractAlternate_performed;
         // 订阅完成后再启用 Player 动作表中的所有输入动作。
         inputActions.Player.Enable();
+        inputActions.Player.Pause.performed += Pause_performed; 
+    }
+
+    private void Pause_performed(InputAction.CallbackContext obj)
+    {
+        OnPauseAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnDisable()
@@ -41,6 +51,7 @@ public class GameInput : MonoBehaviour
 
         inputActions.Player.Interact.performed -= OnInteract;
         inputActions.Player.InteractAlternates.performed -= InteractAlternate_performed;
+        inputActions.Player.Pause.performed -= Pause_performed;
         inputActions.Player.Disable();
     }
 
