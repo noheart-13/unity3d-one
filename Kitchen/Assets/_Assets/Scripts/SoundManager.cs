@@ -2,12 +2,17 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    private const string PlayerPrefsSoundVolumeKey = "SoundVolume"; // Key for saving volume in PlayerPrefs
     public static SoundManager Instance { get; private set; }
     [SerializeField] private AudioClipRefsSO audioClipRefsSO;
+
+    private float volume = 1f; // Default volume level
 
     private void Awake()
     {
         Instance = this;
+
+        volume = PlayerPrefs.GetFloat(PlayerPrefsSoundVolumeKey, 1f); // Load saved volume or default to 1
     }
 
     private void Start()
@@ -69,8 +74,25 @@ public class SoundManager : MonoBehaviour
         AudioClip clip = audioClipArry[Random.Range(0, audioClipArry.Length)];
         PlaySound(clip, position, volume);
     }
-    public void PlayFootstepSound(Vector3 position, float volume = 3f)
+    public void PlayFootstepSound(Vector3 position, float volumeMultiplier = 3f)
     {
-        PlaySound(audioClipRefsSO.footstepSounds, position, volume);
+        PlaySound(audioClipRefsSO.footstepSounds, position, volumeMultiplier * volume);
+    }
+
+    public void ChangeVolume()
+    {
+        // Implement volume change logic here
+        volume += 0.1f; // Example: Increase volume by 10%
+        if (volume > 1f)
+        {
+            volume = 0f; // Reset to 0 if it exceeds 1
+        }
+        PlayerPrefs.SetFloat(PlayerPrefsSoundVolumeKey, volume); // Save the volume to PlayerPrefs
+        PlayerPrefs.Save(); // Ensure the changes are saved
+    }
+
+    public float GetVolume()
+    {
+        return volume;
     }
 }

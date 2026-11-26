@@ -39,6 +39,13 @@ public class GameManager : MonoBehaviour
 
     private void GameInput_OnPauseAction(object sender, EventArgs e)
     {
+        OptionsUI optionsUI = OptionsUI.Instance;
+        if (isGamePaused && optionsUI != null && optionsUI.gameObject.activeInHierarchy)
+        {
+            optionsUI.Hide();
+            return;
+        }
+
         PauseGame();
     }
 
