@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
     private const string PlayerPrefsSoundVolumeKey = "SoundVolume"; // Key for saving volume in PlayerPrefs
     public static SoundManager Instance { get; private set; }
+    public event System.Action<float> OnVolumeChanged;
     [SerializeField] private AudioClipRefsSO audioClipRefsSO;
 
     private float volume = 1f; // Default volume level
@@ -64,19 +65,22 @@ public class SoundManager : MonoBehaviour
         PlaySound(audioClipRefsSO.deliveryFailSounds, deliveryCounter.transform.position);
     }
 
-    private void PlaySound(AudioClip audioClip, Vector3 position, float volume = 2f)
+    private void PlaySound(AudioClip audioClip, Vector3 position, float volumeMultiplier = 2f)
     {
-        AudioSource.PlayClipAtPoint(audioClip, position, volume);
+        float playbackVolume = volumeMultiplier * volume;
+        if (playbackVolume <= 0f) return;
+
+        AudioSource.PlayClipAtPoint(audioClip, position, playbackVolume);
     }
-    private void PlaySound(AudioClip[] audioClipArry, Vector3 position, float volume = 2f)
+    private void PlaySound(AudioClip[] audioClipArry, Vector3 position, float volumeMultiplier = 2f)
     {
         if (audioClipArry.Length == 0) return;
         AudioClip clip = audioClipArry[Random.Range(0, audioClipArry.Length)];
-        PlaySound(clip, position, volume);
+        PlaySound(clip, position, volumeMultiplier);
     }
     public void PlayFootstepSound(Vector3 position, float volumeMultiplier = 3f)
     {
-        PlaySound(audioClipRefsSO.footstepSounds, position, volumeMultiplier * volume);
+        PlaySound(audioClipRefsSO.footstepSounds, position, volumeMultiplier);
     }
 
     public void ChangeVolume()
@@ -89,6 +93,7 @@ public class SoundManager : MonoBehaviour
         }
         PlayerPrefs.SetFloat(PlayerPrefsSoundVolumeKey, volume); // Save the volume to PlayerPrefs
         PlayerPrefs.Save(); // Ensure the changes are saved
+        OnVolumeChanged?.Invoke(volume);
     }
 
     public float GetVolume()

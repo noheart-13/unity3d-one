@@ -6,11 +6,24 @@ using System;
 
 public class GameInput : MonoBehaviour
 {
+    private const string PLAYER_PREFS_BINDINGS = "InputBindings";
+
     public static GameInput Instance { get; private set; }
 
     public event EventHandler OnInteractEvent;
     public event EventHandler OnInteractAlternateAction;
     public event EventHandler OnPauseAction;
+
+    public enum Binding
+    {
+        Move_Up,
+        Move_Down,
+        Move_Left,
+        Move_Right,
+        Interact,
+        InteractAlternate,
+        Pause
+    }
 
     // 由 Input Actions 资源自动生成的输入包装类实例。
     private InputSystem_Actions inputActions;
@@ -20,6 +33,12 @@ public class GameInput : MonoBehaviour
         Instance = this;
         // 创建输入实例，并启用 Player 动作表中的所有输入动作。
         inputActions = new InputSystem_Actions();
+
+        if (PlayerPrefs.HasKey(PLAYER_PREFS_BINDINGS)){
+            inputActions.LoadBindingOverridesFromJson(PlayerPrefs.GetString(PLAYER_PREFS_BINDINGS));
+        }
+
+        Debug.Log(GetBindingText(Binding.Move_Up));
     }
 
     private void OnEnable()
@@ -80,5 +99,79 @@ public class GameInput : MonoBehaviour
         // 归一化后向量长度最大为 1，避免斜向移动比单轴移动更快。
         return inputVector.normalized;
     }
+    public string GetBindingText(Binding binding)
+    {
+        switch (binding)
+        {
+            case Binding.Move_Up:
+                return inputActions.Player.Move.bindings[2].ToDisplayString();
+            case Binding.Move_Down:
+                return inputActions.Player.Move.bindings[4].ToDisplayString();
+            case Binding.Move_Left:
+                return inputActions.Player.Move.bindings[6].ToDisplayString();
+            case Binding.Move_Right:
+                return inputActions.Player.Move.bindings[8].ToDisplayString();
+            case Binding.Interact:
+                return inputActions.Player.Interact.bindings[0].ToDisplayString();
+            case Binding.InteractAlternate:
+                return inputActions.Player.InteractAlternates.bindings[1].ToDisplayString();
+            case Binding.Pause:
+                return inputActions.Player.Pause.bindings[0].ToDisplayString();
+            default:
+                return null;
+        }
+    }
+    public void RebindBinding(Binding binding, Action onComplete)
+    {
 
+        // Implementation for rebinding a specific binding
+        inputActions.Player.Disable();
+        InputAction inputAction;
+        int bindingIndex ;
+
+        switch (binding)
+        {
+            default:
+            case Binding.Move_Up:
+               inputAction = inputActions.Player.Move;
+                bindingIndex = 2;
+                break;
+            case Binding.Move_Down:
+                inputAction = inputActions.Player.Move;
+                bindingIndex = 4;
+                break;
+            case Binding.Move_Left:
+                inputAction = inputActions.Player.Move;
+                bindingIndex = 6;
+                break;
+            case Binding.Move_Right:
+                inputAction = inputActions.Player.Move;
+                bindingIndex = 8;
+                break;
+            case Binding.Interact:
+                inputAction = inputActions.Player.Interact;
+                bindingIndex = 0;
+                break;
+            case Binding.InteractAlternate:
+                inputAction = inputActions.Player.InteractAlternates;
+                bindingIndex = 1;
+                break;
+            case Binding.Pause:
+                inputAction = inputActions.Player.Pause;
+                bindingIndex = 0;
+                break;
+
+        }
+        inputAction.PerformInteractiveRebinding(bindingIndex)
+            .OnComplete(callback =>
+            {
+                callback.Dispose(); 
+                inputActions.Player.Enable();
+                onComplete();
+
+                PlayerPrefs.SetString(PLAYER_PREFS_BINDINGS, inputAction.SaveBindingOverridesAsJson());
+                PlayerPrefs.Save();
+            })
+            .Start();
+    }
 }
